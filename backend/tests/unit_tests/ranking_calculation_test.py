@@ -483,6 +483,26 @@ def test_determine_match_winner_index_tennis() -> None:
     match_standard = match.model_copy(update={"scores": None})
     assert determine_match_winner_index(match_standard) is None
 
+    match_team2_wins_tiebreak = match.model_copy(
+        update={
+            "scores": [
+                SetScore(team1_games=6, team2_games=6, team1_tiebreak=5, team2_tiebreak=7),
+                SetScore(team1_games=6, team2_games=4),
+            ]
+        }
+    )
+    assert determine_match_winner_index(match_team2_wins_tiebreak) is None
+
+    match_team1_wins_all_tiebreaks = match.model_copy(
+        update={
+            "scores": [
+                SetScore(team1_games=6, team2_games=6, team1_tiebreak=7, team2_tiebreak=5),
+                SetScore(team1_games=6, team2_games=6, team1_tiebreak=7, team2_tiebreak=4),
+            ]
+        }
+    )
+    assert determine_match_winner_index(match_team1_wins_all_tiebreaks) == 0
+
 
 def test_determine_match_winner_index_standard() -> None:
     now = datetime_utc.now()

@@ -20,11 +20,19 @@ export function getMatchStartTime(match: MatchWithDetails) {
 
 export function getSetsWon(match: MatchWithDetails, isTeam1: boolean): number {
   if (match.scores == null) return 0;
-  return match.scores.filter((setScore) =>
-    isTeam1
-      ? setScore.team1_games > setScore.team2_games
-      : setScore.team2_games > setScore.team1_games,
-  ).length;
+  return match.scores.filter((setScore) => {
+    if (setScore.team1_games !== setScore.team2_games) {
+      return isTeam1
+        ? setScore.team1_games > setScore.team2_games
+        : setScore.team2_games > setScore.team1_games;
+    }
+    const team1Tiebreak = setScore.team1_tiebreak;
+    const team2Tiebreak = setScore.team2_tiebreak;
+    if (team1Tiebreak == null || team2Tiebreak == null || team1Tiebreak === team2Tiebreak) {
+      return false;
+    }
+    return isTeam1 ? team1Tiebreak > team2Tiebreak : team2Tiebreak > team1Tiebreak;
+  }).length;
 }
 
 export function getMatchScoreString(match: MatchWithDetails, isTeam1: boolean): string {
