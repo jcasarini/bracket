@@ -25,6 +25,27 @@ class SetScore(BaseModel):
         return self
 
 
+def determine_set_winner_index(set_score: "SetScore") -> int | None:
+    """
+    Determine the index of the winning input of a single set.
+
+    Returns 0 when the first input won the set, 1 when the second input won the
+    set and None when the set was a draw (or hasn't been decided yet).
+
+    A set is normally decided by the games won. When the games are tied (e.g.
+    6-6), the tiebreak decides the set.
+    """
+    if set_score.team1_games != set_score.team2_games:
+        return 0 if set_score.team1_games > set_score.team2_games else 1
+
+    if set_score.team1_tiebreak is not None and set_score.team2_tiebreak is not None:
+        if set_score.team1_tiebreak == set_score.team2_tiebreak:
+            return None
+        return 0 if set_score.team1_tiebreak > set_score.team2_tiebreak else 1
+
+    return None
+
+
 def determine_match_winner_index(match: "Match") -> int | None:
     """
     Determine the index of the winning stage item input.
@@ -37,10 +58,10 @@ def determine_match_winner_index(match: "Match") -> int | None:
     """
     if match.scores is not None:
         team1_sets_won = sum(
-            1 for set_score in match.scores if set_score.team1_games > set_score.team2_games
+            1 for set_score in match.scores if determine_set_winner_index(set_score) == 0
         )
         team2_sets_won = sum(
-            1 for set_score in match.scores if set_score.team2_games > set_score.team1_games
+            1 for set_score in match.scores if determine_set_winner_index(set_score) == 1
         )
         if team1_sets_won > team2_sets_won:
             return 0
