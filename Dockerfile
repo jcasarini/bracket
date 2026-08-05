@@ -5,6 +5,10 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
+# The frontend is served by the backend under `API_PREFIX` (e.g. `/api`), so
+# the API base URL must match that prefix when no build arg is provided.
+ARG VITE_API_BASE_URL=http://localhost:8400/api
+
 COPY frontend .
 
 RUN apk add pnpm && \
@@ -33,7 +37,7 @@ COPY --from=builder --chown=bracket:bracket /app/dist /app/frontend-dist
 EXPOSE 8400
 
 HEALTHCHECK --interval=30s --timeout=5s --retries=5 --start-period=30s \
-gemini    CMD wget -O - http://0.0.0.0:8400/api/ping | grep -q '"ping"'
+    CMD wget -O - http://0.0.0.0:8400/api/ping | grep -q '"ping"'
 
 CMD [ \
     "uv", \
