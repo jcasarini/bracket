@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 
 from heliclockter import datetime_utc
@@ -115,7 +116,7 @@ async def sql_update_match(match_id: MatchId, match: MatchBody, tournament: Tour
             **match.model_dump(),
             "scores": None
             if match.scores is None
-            else [set_score.model_dump() for set_score in match.scores],
+            else json.dumps([set_score.model_dump() for set_score in match.scores]),
             "duration_minutes": duration_minutes,
             "margin_minutes": margin_minutes,
         },
