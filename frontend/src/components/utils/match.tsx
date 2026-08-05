@@ -27,14 +27,17 @@ export function getSetsWon(match: MatchWithDetails, isTeam1: boolean): number {
   ).length;
 }
 
-export function getMatchScore(match: MatchWithDetails, isTeam1: boolean): number {
+export function getMatchScoreString(match: MatchWithDetails, isTeam1: boolean): string {
   if (match.scores != null && match.scores.length > 0) {
-    return match.scores.reduce(
-      (sum, setScore) => sum + (isTeam1 ? setScore.team1_games : setScore.team2_games),
-      0,
-    );
+    return match.scores
+      .map((setScore) => {
+        const games = isTeam1 ? setScore.team1_games : setScore.team2_games;
+        const tiebreak = isTeam1 ? setScore.team1_tiebreak : setScore.team2_tiebreak;
+        return tiebreak != null ? `${games}(${tiebreak})` : `${games}`;
+      })
+      .join(' ');
   }
-  return isTeam1 ? match.stage_item_input1_score : match.stage_item_input2_score;
+  return String(isTeam1 ? match.stage_item_input1_score : match.stage_item_input2_score);
 }
 
 export function getMatchWinnerIndex(match: MatchWithDetails): 0 | 1 | null {

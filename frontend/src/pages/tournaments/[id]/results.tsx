@@ -22,7 +22,7 @@ import { Time, formatTime } from '@components/utils/datetime';
 import {
   formatMatchInput1,
   formatMatchInput2,
-  getMatchScore,
+  getMatchScoreString,
   getMatchWinnerIndex,
 } from '@components/utils/match';
 import { Translator } from '@components/utils/types';
@@ -47,8 +47,8 @@ function ScheduleRow({
   const winColor = '#2a8f37';
   const drawColor = '#656565';
   const loseColor = '#af4034';
-  const team1_score = getMatchScore(data.match, true);
-  const team2_score = getMatchScore(data.match, false);
+  const team1_score = getMatchScoreString(data.match, true);
+  const team2_score = getMatchScoreString(data.match, false);
   const matchWinnerIndex = getMatchWinnerIndex(data.match);
   const team1_color =
     matchWinnerIndex === 0 ? winColor : matchWinnerIndex === null ? drawColor : loseColor;
