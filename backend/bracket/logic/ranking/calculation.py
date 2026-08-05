@@ -3,7 +3,11 @@ from collections import defaultdict
 from decimal import Decimal
 
 from bracket.logic.ranking.statistics import START_ELO, TeamStatistics
-from bracket.models.db.match import MatchWithDetailsDefinitive
+from bracket.models.db.match import (
+    MatchWithDetailsDefinitive,
+    determine_match_winner_index,
+    get_team_score_in_match,
+)
 from bracket.models.db.ranking import Ranking
 from bracket.models.db.stage_item import StageType
 from bracket.models.db.util import StageItemWithRounds
@@ -24,11 +28,10 @@ def set_statistics_for_stage_item_input(
     stage_item: StageItemWithRounds,
 ) -> None:
     is_team1 = team_index == 0
-    team_score = match.stage_item_input1_score if is_team1 else match.stage_item_input2_score
-    was_draw = match.stage_item_input1_score == match.stage_item_input2_score
-    has_won = not was_draw and team_score == max(
-        match.stage_item_input1_score, match.stage_item_input2_score
-    )
+    team_score = get_team_score_in_match(match, is_team1)
+    winner_index = determine_match_winner_index(match)
+    was_draw = winner_index is None
+    has_won = winner_index == team_index
 
     if has_won:
         stats[stage_item_input_id].wins += 1
@@ -41,9 +44,7 @@ def set_statistics_for_stage_item_input(
         swiss_score_diff = ranking.loss_points
 
     if ranking.add_score_points:
-        swiss_score_diff += (
-            match.stage_item_input1_score if is_team1 else match.stage_item_input2_score
-        )
+        swiss_score_diff += team_score
 
     match stage_item.type:
         case StageType.ROUND_ROBIN | StageType.SINGLE_ELIMINATION:

@@ -315,6 +315,8 @@ export type {
   ScheduleMatchesTournamentsTournamentIdScheduleMatchesPostErrors,
   ScheduleMatchesTournamentsTournamentIdScheduleMatchesPostResponse,
   ScheduleMatchesTournamentsTournamentIdScheduleMatchesPostResponses,
+  ScoringType,
+  SetScore,
   SingleCourtResponse,
   SingleMatchResponse,
   SinglePlayerResponse,

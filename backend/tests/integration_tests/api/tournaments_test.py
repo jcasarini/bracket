@@ -41,6 +41,8 @@ async def test_tournaments_endpoint(
                 "auto_assign_courts": True,
                 "duration_minutes": 10,
                 "margin_minutes": 5,
+                "scoring_type": "STANDARD",
+                "sets_to_win": 2,
                 "status": "OPEN",
             }
         ],
@@ -67,6 +69,8 @@ async def test_tournament_endpoint(
             "auto_assign_courts": True,
             "duration_minutes": 10,
             "margin_minutes": 5,
+            "scoring_type": "STANDARD",
+            "sets_to_win": 2,
             "status": "OPEN",
         },
     }

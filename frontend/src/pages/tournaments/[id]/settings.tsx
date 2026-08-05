@@ -28,7 +28,7 @@ import { assert_not_none } from '@components/utils/assert';
 import { DropzoneButton } from '@components/utils/file_upload';
 import { GenericSkeletonThreeRows } from '@components/utils/skeletons';
 import { capitalize, getBaseURL, getTournamentIdFromRouter } from '@components/utils/util';
-import { Club, Tournament, TournamentResponse } from '@openapi';
+import { Club, ScoringType, Tournament, TournamentResponse } from '@openapi';
 import NotFoundTitle from '@pages/404';
 import TournamentLayout from '@pages/tournaments/_tournament_layout';
 import {
@@ -136,6 +136,8 @@ function GeneralTournamentForm({
       auto_assign_courts: tournament.auto_assign_courts,
       duration_minutes: tournament.duration_minutes,
       margin_minutes: tournament.margin_minutes,
+      scoring_type: tournament.scoring_type,
+      sets_to_win: tournament.sets_to_win,
     },
 
     validate: {
@@ -146,6 +148,8 @@ function GeneralTournamentForm({
         value != null && value > 0 ? null : t('duration_minutes_choose_title'),
       margin_minutes: (value) =>
         value != null && value > 0 ? null : t('margin_minutes_choose_title'),
+      sets_to_win: (value) =>
+        value != null && value >= 1 && value <= 5 ? null : t('sets_to_win_validation'),
     },
   });
 
@@ -164,6 +168,8 @@ function GeneralTournamentForm({
           values.start_time.toISOString(),
           values.duration_minutes,
           values.margin_minutes,
+          values.scoring_type as ScoringType,
+          values.sets_to_win,
         );
 
         await swrTournamentResponse.mutate();
@@ -224,6 +230,30 @@ function GeneralTournamentForm({
               label={t('time_between_matches_label')}
               mt="lg"
               {...form.getInputProps('margin_minutes')}
+            />
+          </Grid.Col>
+        </Grid>
+      </Fieldset>
+      <Fieldset legend={t('scoring_settings_legend')} mt="lg" radius="md">
+        <Text fz="sm">{t('scoring_settings_description')}</Text>
+        <Grid>
+          <Grid.Col span={{ sm: 6 }}>
+            <Select
+              label={t('scoring_type_label')}
+              data={[
+                { value: 'STANDARD', label: t('scoring_type_standard') },
+                { value: 'TENNIS', label: t('scoring_type_tennis') },
+              ]}
+              {...form.getInputProps('scoring_type')}
+            />
+          </Grid.Col>
+          <Grid.Col span={{ sm: 6 }}>
+            <NumberInput
+              label={t('sets_to_win_label')}
+              min={1}
+              max={5}
+              disabled={form.values.scoring_type !== 'TENNIS'}
+              {...form.getInputProps('sets_to_win')}
             />
           </Grid.Col>
         </Grid>

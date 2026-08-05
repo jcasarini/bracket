@@ -1,4 +1,5 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, Table, UniqueConstraint, func
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import declarative_base  # type: ignore[attr-defined]
 from sqlalchemy.sql.sqltypes import BigInteger, Boolean, DateTime, Enum, Float, Text
 
@@ -29,6 +30,17 @@ tournaments = Table(
     Column("auto_assign_courts", Boolean, nullable=False, server_default="f"),
     Column("duration_minutes", Integer, nullable=False, server_default="15"),
     Column("margin_minutes", Integer, nullable=False, server_default="5"),
+    Column(
+        "scoring_type",
+        Enum(
+            "STANDARD",
+            "TENNIS",
+            name="scoring_type",
+        ),
+        nullable=False,
+        server_default="STANDARD",
+    ),
+    Column("sets_to_win", Integer, nullable=False, server_default="2"),
     Column(
         "status",
         Enum(
@@ -138,6 +150,7 @@ matches = Table(
     Column("court_id", BigInteger, ForeignKey("courts.id"), nullable=True),
     Column("stage_item_input1_score", Integer, nullable=False),
     Column("stage_item_input2_score", Integer, nullable=False),
+    Column("scores", JSONB, nullable=True),
     Column("position_in_schedule", Integer, nullable=True),
 )
 

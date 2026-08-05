@@ -1,4 +1,5 @@
 from enum import auto
+from typing import Annotated
 
 from heliclockter import datetime_utc
 from pydantic import Field
@@ -14,6 +15,11 @@ class TournamentStatus(EnumAutoStr):
     ARCHIVED = auto()
 
 
+class ScoringType(EnumAutoStr):
+    STANDARD = auto()
+    TENNIS = auto()
+
+
 class TournamentInsertable(BaseModelORM):
     club_id: ClubId
     name: str
@@ -26,6 +32,8 @@ class TournamentInsertable(BaseModelORM):
     logo_path: str | None = None
     players_can_be_in_multiple_teams: bool
     auto_assign_courts: bool
+    scoring_type: ScoringType = ScoringType.STANDARD
+    sets_to_win: Annotated[int, Field(ge=1, le=5)] = 2
     status: TournamentStatus = TournamentStatus.OPEN
 
 
@@ -42,6 +50,8 @@ class TournamentUpdateBody(BaseModelORM):
     auto_assign_courts: bool
     duration_minutes: int = Field(..., ge=1)
     margin_minutes: int = Field(..., ge=0)
+    scoring_type: ScoringType = ScoringType.STANDARD
+    sets_to_win: Annotated[int, Field(ge=1, le=5)] = 2
 
 
 class TournamentChangeStatusBody(BaseModelORM):

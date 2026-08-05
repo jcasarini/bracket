@@ -18,7 +18,7 @@ import { SWRResponse } from 'swr';
 
 import SaveButton from '@components/buttons/save';
 import { assert_not_none } from '@components/utils/assert';
-import { Club, Tournament, TournamentsResponse } from '@openapi';
+import { Club, ScoringType, Tournament, TournamentsResponse } from '@openapi';
 import { getBaseApiUrl, getClubs } from '@services/adapter';
 import { createTournament } from '@services/tournament';
 import dayjs from 'dayjs';
@@ -55,6 +55,8 @@ function GeneralTournamentForm({
       auto_assign_courts: true,
       duration_minutes: 10,
       margin_minutes: 5,
+      scoring_type: 'STANDARD',
+      sets_to_win: 2,
     },
 
     validate: {
@@ -65,6 +67,8 @@ function GeneralTournamentForm({
         value != null && value > 0 ? null : t('duration_minutes_choose_title'),
       margin_minutes: (value) =>
         value != null && value > 0 ? null : t('margin_minutes_choose_title'),
+      sets_to_win: (value) =>
+        value != null && value >= 1 && value <= 5 ? null : t('sets_to_win_validation'),
     },
   });
 
@@ -81,6 +85,8 @@ function GeneralTournamentForm({
           values.start_time,
           values.duration_minutes,
           values.margin_minutes,
+          values.scoring_type as ScoringType,
+          values.sets_to_win,
         );
         await swrTournamentsResponse.mutate();
         setOpened(false);
@@ -145,6 +151,28 @@ function GeneralTournamentForm({
             label={t('time_between_matches_label')}
             mt="lg"
             {...form.getInputProps('margin_minutes')}
+          />
+        </Grid.Col>
+      </Grid>
+
+      <Grid mt="lg">
+        <Grid.Col span={{ sm: 6 }}>
+          <Select
+            label={t('scoring_type_label')}
+            data={[
+              { value: 'STANDARD', label: t('scoring_type_standard') },
+              { value: 'TENNIS', label: t('scoring_type_tennis') },
+            ]}
+            {...form.getInputProps('scoring_type')}
+          />
+        </Grid.Col>
+        <Grid.Col span={{ sm: 6 }}>
+          <NumberInput
+            label={t('sets_to_win_label')}
+            min={1}
+            max={5}
+            disabled={form.values.scoring_type !== 'TENNIS'}
+            {...form.getInputProps('sets_to_win')}
           />
         </Grid.Col>
       </Grid>

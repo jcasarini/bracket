@@ -428,6 +428,20 @@
             "title": "Round Id",
             "type": "integer"
           },
+          "scores": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/SetScore"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scores"
+          },
           "stage_item_input1": {
             "anyOf": [
               {
@@ -546,6 +560,7 @@
           "round_id",
           "stage_item_input1_score",
           "stage_item_input2_score",
+          "scores",
           "court_id",
           "stage_item_input1_conflict",
           "stage_item_input2_conflict",
@@ -599,6 +614,20 @@
             "title": "Round Id",
             "type": "integer"
           },
+          "scores": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/SetScore"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scores"
+          },
           "stage_item_input1_score": {
             "default": 0,
             "title": "Stage Item Input1 Score",
@@ -614,6 +643,7 @@
           "round_id",
           "stage_item_input1_score",
           "stage_item_input2_score",
+          "scores",
           "court_id",
           "custom_duration_minutes",
           "custom_margin_minutes"
@@ -800,6 +830,20 @@
             "title": "Round Id",
             "type": "integer"
           },
+          "scores": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/SetScore"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scores"
+          },
           "stage_item_input1": {
             "anyOf": [
               {
@@ -918,6 +962,7 @@
           "round_id",
           "stage_item_input1_score",
           "stage_item_input2_score",
+          "scores",
           "court_id",
           "stage_item_input1_conflict",
           "stage_item_input2_conflict",
@@ -1010,6 +1055,20 @@
             "title": "Round Id",
             "type": "integer"
           },
+          "scores": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/SetScore"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scores"
+          },
           "stage_item_input1": {
             "anyOf": [
               {
@@ -1122,6 +1181,7 @@
           "round_id",
           "stage_item_input1_score",
           "stage_item_input2_score",
+          "scores",
           "court_id",
           "stage_item_input1_conflict",
           "stage_item_input2_conflict",
@@ -1567,6 +1627,62 @@
           "matches"
         ],
         "title": "RoundWithMatches",
+        "type": "object"
+      },
+      "ScoringType": {
+        "enum": [
+          "STANDARD",
+          "TENNIS"
+        ],
+        "title": "ScoringType",
+        "type": "string"
+      },
+      "SetScore": {
+        "properties": {
+          "team1_games": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Team1 Games",
+            "type": "integer"
+          },
+          "team1_tiebreak": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Team1 Tiebreak"
+          },
+          "team2_games": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Team2 Games",
+            "type": "integer"
+          },
+          "team2_tiebreak": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Team2 Tiebreak"
+          }
+        },
+        "required": [
+          "team1_games",
+          "team2_games",
+          "team1_tiebreak",
+          "team2_tiebreak"
+        ],
+        "title": "SetScore",
         "type": "object"
       },
       "SingleCourtResponse": {
@@ -2601,6 +2717,17 @@
             "title": "Players Can Be In Multiple Teams",
             "type": "boolean"
           },
+          "scoring_type": {
+            "$ref": "#/components/schemas/ScoringType",
+            "default": "STANDARD"
+          },
+          "sets_to_win": {
+            "default": 2,
+            "maximum": 5.0,
+            "minimum": 1.0,
+            "title": "Sets To Win",
+            "type": "integer"
+          },
           "start_time": {
             "format": "date-time",
             "title": "Start Time",
@@ -2623,6 +2750,8 @@
           "logo_path",
           "players_can_be_in_multiple_teams",
           "auto_assign_courts",
+          "scoring_type",
+          "sets_to_win",
           "status",
           "id"
         ],
@@ -2670,6 +2799,17 @@
             "title": "Players Can Be In Multiple Teams",
             "type": "boolean"
           },
+          "scoring_type": {
+            "$ref": "#/components/schemas/ScoringType",
+            "default": "STANDARD"
+          },
+          "sets_to_win": {
+            "default": 2,
+            "maximum": 5.0,
+            "minimum": 1.0,
+            "title": "Sets To Win",
+            "type": "integer"
+          },
           "start_time": {
             "format": "date-time",
             "title": "Start Time",
@@ -2685,6 +2825,8 @@
           "auto_assign_courts",
           "duration_minutes",
           "margin_minutes",
+          "scoring_type",
+          "sets_to_win",
           "club_id"
         ],
         "title": "TournamentBody",
@@ -2759,6 +2901,17 @@
             "title": "Players Can Be In Multiple Teams",
             "type": "boolean"
           },
+          "scoring_type": {
+            "$ref": "#/components/schemas/ScoringType",
+            "default": "STANDARD"
+          },
+          "sets_to_win": {
+            "default": 2,
+            "maximum": 5.0,
+            "minimum": 1.0,
+            "title": "Sets To Win",
+            "type": "integer"
+          },
           "start_time": {
             "format": "date-time",
             "title": "Start Time",
@@ -2773,7 +2926,9 @@
           "players_can_be_in_multiple_teams",
           "auto_assign_courts",
           "duration_minutes",
-          "margin_minutes"
+          "margin_minutes",
+          "scoring_type",
+          "sets_to_win"
         ],
         "title": "TournamentUpdateBody",
         "type": "object"
