@@ -10,7 +10,7 @@ import { Time } from '@components/utils/datetime';
 import {
   formatMatchInput1,
   formatMatchInput2,
-  getMatchScore,
+  getMatchScoreString,
   getMatchWinnerIndex,
   isMatchHappening,
 } from '@components/utils/match';
@@ -82,14 +82,14 @@ export default function Match({
       <div className={classes.top} style={team1_style}>
         <Grid grow>
           <Grid.Col span={10}>{team1_label}</Grid.Col>
-          <Grid.Col span={2}>{getMatchScore(match, true)}</Grid.Col>
+          <Grid.Col span={2}>{getMatchScoreString(match, true)}</Grid.Col>
         </Grid>
       </div>
       <div className={classes.divider} />
       <div className={classes.bottom} style={team2_style}>
         <Grid grow>
           <Grid.Col span={10}>{team2_label}</Grid.Col>
-          <Grid.Col span={2}>{getMatchScore(match, false)}</Grid.Col>
+          <Grid.Col span={2}>{getMatchScoreString(match, false)}</Grid.Col>
         </Grid>
       </div>
     </>
