@@ -19,12 +19,17 @@ import { useTranslation } from 'react-i18next';
 import MatchModal from '@components/modals/match_modal';
 import { NoContent } from '@components/no_content/empty_table_info';
 import { Time, formatTime } from '@components/utils/datetime';
-import { formatMatchInput1, formatMatchInput2 } from '@components/utils/match';
+import {
+  formatMatchInput1,
+  formatMatchInput2,
+  getMatchScore,
+  getMatchWinnerIndex,
+} from '@components/utils/match';
 import { Translator } from '@components/utils/types';
 import { getTournamentIdFromRouter, responseIsValid } from '@components/utils/util';
 import { MatchWithDetails } from '@openapi';
 import TournamentLayout from '@pages/tournaments/_tournament_layout';
-import { getCourts, getStages } from '@services/adapter';
+import { getCourts, getStages, getTournamentById } from '@services/adapter';
 import { getMatchLookup, getStageItemLookup, stringToColour } from '@services/lookups';
 
 function ScheduleRow({
@@ -42,18 +47,13 @@ function ScheduleRow({
   const winColor = '#2a8f37';
   const drawColor = '#656565';
   const loseColor = '#af4034';
+  const team1_score = getMatchScore(data.match, true);
+  const team2_score = getMatchScore(data.match, false);
+  const matchWinnerIndex = getMatchWinnerIndex(data.match);
   const team1_color =
-    data.match.stage_item_input1_score > data.match.stage_item_input2_score
-      ? winColor
-      : data.match.stage_item_input1_score === data.match.stage_item_input2_score
-        ? drawColor
-        : loseColor;
+    matchWinnerIndex === 0 ? winColor : matchWinnerIndex === null ? drawColor : loseColor;
   const team2_color =
-    data.match.stage_item_input2_score > data.match.stage_item_input1_score
-      ? winColor
-      : data.match.stage_item_input1_score === data.match.stage_item_input2_score
-        ? drawColor
-        : loseColor;
+    matchWinnerIndex === 1 ? winColor : matchWinnerIndex === null ? drawColor : loseColor;
 
   return (
     <UnstyledButton style={{ width: '48rem' }}>
@@ -114,7 +114,7 @@ function ScheduleRow({
                   fontWeight: 800,
                 }}
               >
-                {data.match.stage_item_input1_score}
+                {team1_score}
               </div>
             </Grid.Col>
           </Grid>
@@ -135,7 +135,7 @@ function ScheduleRow({
                   fontWeight: 800,
                 }}
               >
-                {data.match.stage_item_input2_score}
+                {team2_score}
               </div>
             </Grid.Col>
           </Grid>
@@ -232,6 +232,9 @@ export default function ResultsPage() {
   const { tournamentData } = getTournamentIdFromRouter();
   const swrStagesResponse = getStages(tournamentData.id);
   const swrCourtsResponse = getCourts(tournamentData.id);
+  const swrTournamentResponse = getTournamentById(tournamentData.id);
+  const tournamentDataFull =
+    swrTournamentResponse.data != null ? swrTournamentResponse.data.data : null;
 
   const stageItemsLookup = responseIsValid(swrStagesResponse)
     ? getStageItemLookup(swrStagesResponse)
@@ -258,7 +261,7 @@ export default function ResultsPage() {
       <MatchModal
         swrStagesResponse={swrStagesResponse}
         swrUpcomingMatchesResponse={null}
-        tournamentData={tournamentData}
+        tournamentData={tournamentDataFull ?? tournamentData}
         match={match}
         opened={modalOpened}
         setOpened={modalSetOpenedAndUpdateMatch}

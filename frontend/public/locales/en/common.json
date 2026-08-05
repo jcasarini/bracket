@@ -272,5 +272,17 @@
     "win_distribution_text_draws": "draws",
     "win_distribution_text_losses": "losses",
     "win_distribution_text_win": "wins",
-    "win_points_input_label": "Points for a win"
+    "win_points_input_label": "Points for a win",
+    "scoring_settings_legend": "Scoring",
+    "scoring_settings_description": "Choose how match scores are entered.",
+    "scoring_type_label": "Scoring type",
+    "scoring_type_standard": "Standard (single score)",
+    "scoring_type_tennis": "Tennis (best of N sets)",
+    "sets_to_win_label": "Sets to win",
+    "sets_to_win_validation": "Sets to win must be between 1 and 5",
+    "sets_label": "Set",
+    "tiebreak_label": "Tiebreak",
+    "add_set_button": "Add set",
+    "remove_set_button": "Remove set",
+    "tiebreak_pair_validation": "Both tiebreak scores must be set together"
 }

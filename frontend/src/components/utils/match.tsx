@@ -18,6 +18,38 @@ export function getMatchStartTime(match: MatchWithDetails) {
   return dayjs(match.start_time || '');
 }
 
+export function getSetsWon(match: MatchWithDetails, isTeam1: boolean): number {
+  if (match.scores == null) return 0;
+  return match.scores.filter((setScore) =>
+    isTeam1
+      ? setScore.team1_games > setScore.team2_games
+      : setScore.team2_games > setScore.team1_games,
+  ).length;
+}
+
+export function getMatchScore(match: MatchWithDetails, isTeam1: boolean): number {
+  if (match.scores != null && match.scores.length > 0) {
+    return match.scores.reduce(
+      (sum, setScore) => sum + (isTeam1 ? setScore.team1_games : setScore.team2_games),
+      0,
+    );
+  }
+  return isTeam1 ? match.stage_item_input1_score : match.stage_item_input2_score;
+}
+
+export function getMatchWinnerIndex(match: MatchWithDetails): 0 | 1 | null {
+  if (match.scores != null && match.scores.length > 0) {
+    const team1Sets = getSetsWon(match, true);
+    const team2Sets = getSetsWon(match, false);
+    if (team1Sets > team2Sets) return 0;
+    if (team2Sets > team1Sets) return 1;
+    return null;
+  }
+  if (match.stage_item_input1_score > match.stage_item_input2_score) return 0;
+  if (match.stage_item_input2_score > match.stage_item_input1_score) return 1;
+  return null;
+}
+
 export function getMatchEndTime(match: MatchWithDetails) {
   return getMatchStartTime(match).add(match.duration_minutes + match.margin_minutes, 'minutes');
 }

@@ -28,7 +28,7 @@ import { Translator } from '@components/utils/types';
 import { getTournamentIdFromRouter, responseIsValid } from '@components/utils/util';
 import { Court, CourtsResponse, MatchWithDetails } from '@openapi';
 import TournamentLayout from '@pages/tournaments/_tournament_layout';
-import { getCourts, getStages } from '@services/adapter';
+import { getCourts, getStages, getTournamentById } from '@services/adapter';
 import { deleteCourt } from '@services/court';
 import {
   getMatchLookup,
@@ -253,6 +253,9 @@ export default function SchedulePage() {
   const { tournamentData } = getTournamentIdFromRouter();
   const swrStagesResponse = getStages(tournamentData.id);
   const swrCourtsResponse = getCourts(tournamentData.id);
+  const swrTournamentResponse = getTournamentById(tournamentData.id);
+  const tournamentDataFull =
+    swrTournamentResponse.data != null ? swrTournamentResponse.data.data : null;
 
   const stageItemsLookup = responseIsValid(swrStagesResponse)
     ? getStageItemLookup(swrStagesResponse)
@@ -281,7 +284,7 @@ export default function SchedulePage() {
         <MatchModal
           swrStagesResponse={swrStagesResponse}
           swrUpcomingMatchesResponse={null}
-          tournamentData={tournamentData}
+          tournamentData={tournamentDataFull ?? tournamentData}
           match={match}
           opened={modalOpened}
           setOpened={modalSetOpened}

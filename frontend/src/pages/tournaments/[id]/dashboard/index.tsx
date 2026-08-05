@@ -8,7 +8,12 @@ import { DashboardFooter } from '@components/dashboard/footer';
 import { DoubleHeader, getTournamentHeadTitle } from '@components/dashboard/layout';
 import { NoContent } from '@components/no_content/empty_table_info';
 import { Time, compareDateTime, formatTime } from '@components/utils/datetime';
-import { formatMatchInput1, formatMatchInput2 } from '@components/utils/match';
+import {
+  formatMatchInput1,
+  formatMatchInput2,
+  getMatchScore,
+  getMatchWinnerIndex,
+} from '@components/utils/match';
 import { Translator } from '@components/utils/types';
 import { responseIsValid, setTitle } from '@components/utils/util';
 import { getCourtsLive, getStagesLive } from '@services/adapter';
@@ -28,18 +33,13 @@ function ScheduleRow({
   const winColor = '#2a8f37';
   const drawColor = '#656565';
   const loseColor = '#af4034';
+  const team1_score = getMatchScore(data.match, true);
+  const team2_score = getMatchScore(data.match, false);
+  const matchWinnerIndex = getMatchWinnerIndex(data.match);
   const team1_color =
-    data.match.stage_item_input1_score > data.match.stage_item_input2_score
-      ? winColor
-      : data.match.stage_item_input1_score === data.match.stage_item_input2_score
-        ? drawColor
-        : loseColor;
+    matchWinnerIndex === 0 ? winColor : matchWinnerIndex === null ? drawColor : loseColor;
   const team2_color =
-    data.match.stage_item_input2_score > data.match.stage_item_input1_score
-      ? winColor
-      : data.match.stage_item_input1_score === data.match.stage_item_input2_score
-        ? drawColor
-        : loseColor;
+    matchWinnerIndex === 1 ? winColor : matchWinnerIndex === null ? drawColor : loseColor;
 
   return (
     <Card shadow="sm" radius="md" withBorder mt="md" pt="0rem">
@@ -89,7 +89,7 @@ function ScheduleRow({
                 fontWeight: 800,
               }}
             >
-              <Center>{data.match.stage_item_input1_score}</Center>
+              <Center>{team1_score}</Center>
             </div>
           </Grid.Col>
         </Grid>
@@ -109,7 +109,7 @@ function ScheduleRow({
                 fontWeight: 800,
               }}
             >
-              <Center>{data.match.stage_item_input2_score}</Center>
+              <Center>{team2_score}</Center>
             </div>
           </Grid.Col>
         </Grid>

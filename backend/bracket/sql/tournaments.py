@@ -79,12 +79,18 @@ async def sql_update_tournament(
             players_can_be_in_multiple_teams = :players_can_be_in_multiple_teams,
             auto_assign_courts = :auto_assign_courts,
             duration_minutes = :duration_minutes,
-            margin_minutes = :margin_minutes
+            margin_minutes = :margin_minutes,
+            scoring_type = :scoring_type,
+            sets_to_win = :sets_to_win
         WHERE tournaments.id = :tournament_id
         """
     await database.execute(
         query=query,
-        values={"tournament_id": tournament_id, **tournament.model_dump()},
+        values={
+            "tournament_id": tournament_id,
+            **tournament.model_dump(),
+            "scoring_type": tournament.scoring_type.value,
+        },
     )
 
 
@@ -117,7 +123,9 @@ async def sql_create_tournament(tournament: TournamentBody) -> TournamentId:
             players_can_be_in_multiple_teams,
             auto_assign_courts,
             duration_minutes,
-            margin_minutes
+            margin_minutes,
+            scoring_type,
+            sets_to_win
         )
         VALUES (
             :name,
@@ -129,9 +137,14 @@ async def sql_create_tournament(tournament: TournamentBody) -> TournamentId:
             :players_can_be_in_multiple_teams,
             :auto_assign_courts,
             :duration_minutes,
-            :margin_minutes
+            :margin_minutes,
+            :scoring_type,
+            :sets_to_win
         )
         RETURNING id
         """
-    new_id = await database.fetch_val(query=query, values=tournament.model_dump())
+    new_id = await database.fetch_val(
+        query=query,
+        values={**tournament.model_dump(), "scoring_type": tournament.scoring_type.value},
+    )
     return TournamentId(new_id)

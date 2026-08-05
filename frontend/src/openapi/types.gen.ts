@@ -226,6 +226,28 @@ export type HttpValidationError = {
 };
 
 /**
+ * SetScore
+ */
+export type SetScore = {
+  /**
+   * Team1 Games
+   */
+  team1_games: number;
+  /**
+   * Team1 Tiebreak
+   */
+  team1_tiebreak: number | null;
+  /**
+   * Team2 Games
+   */
+  team2_games: number;
+  /**
+   * Team2 Tiebreak
+   */
+  team2_tiebreak: number | null;
+};
+
+/**
  * Match
  */
 export type Match = {
@@ -332,6 +354,10 @@ export type MatchBody = {
    */
   round_id: number;
   /**
+   * Scores
+   */
+  scores: Array<SetScore> | null;
+  /**
    * Stage Item Input1 Score
    */
   stage_item_input1_score: number;
@@ -437,6 +463,10 @@ export type MatchWithDetails = {
    */
   round_id: number;
   /**
+   * Scores
+   */
+  scores: Array<SetScore> | null;
+  /**
    * Stage Item Input1
    */
   stage_item_input1: StageItemInputTentative | StageItemInputFinal | StageItemInputEmpty | null;
@@ -524,9 +554,13 @@ export type MatchWithDetailsDefinitive = {
    */
   round_id: number;
   /**
+   * Scores
+   */
+  scores: Array<SetScore> | null;
+  /**
    * Stage Item Input1
    */
-  stage_item_input1: StageItemInputTentative | StageItemInputFinal | StageItemInputEmpty;
+  stage_item_input1: StageItemInputTentative | StageItemInputFinal | StageItemInputEmpty | null;
   /**
    * Stage Item Input1 Conflict
    */
@@ -546,7 +580,7 @@ export type MatchWithDetailsDefinitive = {
   /**
    * Stage Item Input2
    */
-  stage_item_input2: StageItemInputTentative | StageItemInputFinal | StageItemInputEmpty;
+  stage_item_input2: StageItemInputTentative | StageItemInputFinal | StageItemInputEmpty | null;
   /**
    * Stage Item Input2 Conflict
    */
@@ -1431,6 +1465,11 @@ export type TokenResponse = {
 };
 
 /**
+ * ScoringType
+ */
+export type ScoringType = 'STANDARD' | 'TENNIS';
+
+/**
  * Tournament
  */
 export type Tournament = {
@@ -1479,6 +1518,14 @@ export type Tournament = {
    */
   players_can_be_in_multiple_teams: boolean;
   /**
+   * Scoring Type
+   */
+  scoring_type: ScoringType;
+  /**
+   * Sets To Win
+   */
+  sets_to_win: number;
+  /**
    * Start Time
    */
   start_time: string;
@@ -1521,6 +1568,14 @@ export type TournamentBody = {
    * Players Can Be In Multiple Teams
    */
   players_can_be_in_multiple_teams: boolean;
+  /**
+   * Scoring Type
+   */
+  scoring_type: ScoringType;
+  /**
+   * Sets To Win
+   */
+  sets_to_win: number;
   /**
    * Start Time
    */

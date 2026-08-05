@@ -88,6 +88,7 @@ async def sql_update_match(match_id: MatchId, match: MatchBody, tournament: Tour
         SET round_id = :round_id,
             stage_item_input1_score = :stage_item_input1_score,
             stage_item_input2_score = :stage_item_input2_score,
+            scores = :scores,
             court_id = :court_id,
             custom_duration_minutes = :custom_duration_minutes,
             custom_margin_minutes = :custom_margin_minutes,
@@ -112,6 +113,9 @@ async def sql_update_match(match_id: MatchId, match: MatchBody, tournament: Tour
         values={
             "match_id": match_id,
             **match.model_dump(),
+            "scores": None
+            if match.scores is None
+            else [set_score.model_dump() for set_score in match.scores],
             "duration_minutes": duration_minutes,
             "margin_minutes": margin_minutes,
         },
@@ -232,7 +236,8 @@ async def clear_scores_for_matches_in_stage_item(
     query = """
         UPDATE matches
         SET stage_item_input1_score = 0,
-            stage_item_input2_score = 0
+            stage_item_input2_score = 0,
+            scores = NULL
         FROM rounds
         JOIN stage_items ON rounds.stage_item_id = stage_items.id
         JOIN stages ON stages.id = stage_items.stage_id
