@@ -1,7 +1,9 @@
+import json
 from decimal import Decimal
+from typing import Any
 
 from heliclockter import datetime_utc, timedelta
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 from bracket.models.db.court import Court
 from bracket.models.db.shared import BaseModelORM
@@ -82,6 +84,13 @@ class MatchBaseInsertable(BaseModelORM):
     court_id: CourtId | None = None
     stage_item_input1_conflict: bool
     stage_item_input2_conflict: bool
+
+    @field_validator("scores", mode="before")
+    @staticmethod
+    def parse_scores(values: Any) -> Any:
+        if isinstance(values, str):
+            return json.loads(values)
+        return values
 
     @property
     def end_time(self) -> datetime_utc:
